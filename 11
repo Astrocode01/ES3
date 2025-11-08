@@ -1,0 +1,59 @@
+11.	Store name of person in an array and sort the characters in alphabetic order using merge sort algorithm. 
+
+    #include <iostream>
+    #include <string>
+    
+    using namespace std;
+    
+    void merge(string &str, string &temp, int left, int mid, int right) {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+    
+        while ((i <= mid) && (j <= right)) {
+            if (str[i] <= str[j]) {
+                temp[k++] = str[i++];
+            } else {
+                temp[k++] = str[j++];
+            }
+        }
+    
+        while (i <= mid) {
+            temp[k++] = str[i++];
+        }
+    
+        while (j <= right) {
+            temp[k++] = str[j++];
+        }
+    
+        for (i = left; i <= right; i++) {
+            str[i] = temp[i];
+        }
+    }
+    
+    void merge_sort(string &str, string &temp, int left, int right) {
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            merge_sort(str, temp, left, mid);
+            merge_sort(str, temp, mid + 1, right);
+            merge(str, temp, left, mid, right);
+        }
+    }
+    
+    int main() {
+        string name;
+    
+        cout << "Enter the name of the person: ";
+        getline(cin, name);
+    
+        cout << "Original name: " << name << endl;
+    
+        int n = name.length();
+        string temp(n, ' '); 
+    
+        merge_sort(name, temp, 0, n - 1);
+    
+        cout << "Name after sorting characters: " << name << endl;
+    
+    return 0;
+}
