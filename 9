@@ -1,0 +1,104 @@
+9.	Implement circular queue using an array with additional variable count.
+
+    #include <iostream>
+    
+    using namespace std;
+    
+    #define MAX 50
+    
+    class CircularQueue {
+    private:
+        int queue[MAX];
+        int front, rear;
+        int count; 
+        int maxSize;
+    
+    public:
+        CircularQueue() {
+            front = 0;
+            rear = -1;
+            count = 0;
+            maxSize = MAX;
+        }
+    
+        bool isFull() {
+            return (count == maxSize);
+        }
+    
+        bool isEmpty() {
+            return (count == 0);
+        }
+    
+        void insert(int token) {
+            if (isFull()) {
+                cout << "Queue Overflow! Cannot issue more tokens.\n";
+                return;
+            }
+            rear = (rear + 1) % maxSize;
+            queue[rear] = token;
+            count++;
+            cout << "Token number " << token << " issued to the customer.\n";
+        }
+    
+        void remove() {
+            if (isEmpty()) {
+                cout << "Queue Underflow! No customers to serve.\n";
+                return;
+            }
+            int token = queue[front];
+            front = (front + 1) % maxSize;
+            count--;
+            cout << "Serving customer with token number: " << token << "\n";
+        }
+    
+        void display() {
+            if (isEmpty()) {
+                cout << "Queue is empty.\n";
+                return;
+            }
+    
+            cout << "Tokens in the queue: ";
+            int i = front;
+            int j;
+            for (j = 0; j < count; j++) {
+                cout << queue[i] << " ";
+                i = (i + 1) % maxSize;
+            }
+            cout << endl;
+        }
+    };
+    
+    int main() {
+        CircularQueue q;
+        int choice, token = 1;
+    
+        do {
+            cout << "\nMenu:\n";
+            cout << "1. Issue a token\n";
+            cout << "2. Serve a customer\n";
+            cout << "3. Display token numbers\n";
+            cout << "4. Exit\n";
+            cout << "Enter your choice: ";
+            cin >> choice;
+    
+            switch (choice) {
+                case 1:
+                    q.insert(token);
+                    token++;
+                    break;
+                case 2:
+                    q.remove();
+                    break;
+                case 3:
+                    q.display();
+                    break;
+                case 4:
+                    cout << "Exiting program.\n";
+                    break;
+                default:
+                    cout << "Invalid choice! Please try again.\n";
+            }
+        } while (choice != 4);
+    
+        return 0;
+    }
