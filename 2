@@ -1,0 +1,27 @@
+2.	Sort the characters of a student’s name in reverse alphabetical order using bubble sort and display using arrays.
+
+    #include <stdio.h>
+    #include <string.h>
+    
+    int main() {
+        char studentName[] = "ProgrammingStudent";
+        int n = strlen(studentName);
+        char temp;
+    
+        printf("Original Name: %s\n", studentName);
+    
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                
+                if (studentName[j] < studentName[j + 1]) {
+                    temp = studentName[j];
+                    studentName[j] = studentName[j + 1];
+                    studentName[j + 1] = temp;
+                }
+            }
+        }
+    
+        printf("Sorted Name (Reverse): %s\n", studentName);
+    
+        return 0;
+    }
