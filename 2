@@ -1,27 +1,40 @@
 2.	Sort the characters of a student’s name in reverse alphabetical order using bubble sort and display using arrays.
 
-    #include <stdio.h>
-    #include <string.h>
+    #include <iostream>
+    #include <string>
+    #include <algorithm> // For swap
     
-    int main() {
-        char studentName[] = "ProgrammingStudent";
-        int n = strlen(studentName);
-        char temp;
+    using namespace std;
     
-        printf("Original Name: %s\n", studentName);
-    
+    void bubble_sort_desc(string &str) {
+        int n = str.length();
+        bool swapped;
         for (int i = 0; i < n - 1; i++) {
+            swapped = false;
             for (int j = 0; j < n - i - 1; j++) {
-                
-                if (studentName[j] < studentName[j + 1]) {
-                    temp = studentName[j];
-                    studentName[j] = studentName[j + 1];
-                    studentName[j + 1] = temp;
+                // For reverse order, swap if the current char is LESS than the next char
+                if (str[j] < str[j + 1]) {
+                    swap(str[j], str[j + 1]);
+                    swapped = true;
                 }
             }
+            // If no two elements were swapped by inner loop, then break
+            if (swapped == false)
+                break;
         }
+    }
     
-        printf("Sorted Name (Reverse): %s\n", studentName);
+    int main() {
+        string name;
+    
+        cout << "Enter the student's name: ";
+        getline(cin, name);
+    
+        cout << "Original name: " << name << endl;
+    
+        bubble_sort_desc(name);
+    
+        cout << "Name in reverse alphabetical order: " << name << endl;
     
         return 0;
     }
