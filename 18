@@ -1,0 +1,350 @@
+18.	Implement an array based stack and use it to check whether the given string is palindrome or not. Implement circular queue using an array without using additional variable count.
+ Implement priority queue using doubly link list for hospital scenario, 3 being emergency, 2 Appoint based visit and 1 for routine check-up.
+
+
+    #include <iostream>
+    #include <string>
+    
+    using namespace std;
+    
+    #define MAX 50
+    
+    class Stack {
+    private:
+        char arr[MAX];
+        int top;
+    
+    public:
+        Stack() {
+            top = -1;
+        }
+    
+        bool isFull() {
+            return top == MAX - 1;
+        }
+    
+        bool isEmpty() {
+            return top == -1;
+        }
+    
+        void push(char x) {
+            if (isFull()) {
+                cout << "Stack Overflow" << endl;
+                return;
+            }
+            arr[++top] = x;
+        }
+    
+        char pop() {
+            if (isEmpty()) {
+                cout << "Stack Underflow" << endl;
+                return '\0';
+            }
+            return arr[top--];
+        }
+    };
+    
+    bool isPalindrome(string s) {
+        Stack charStack;
+        int length = s.length();
+    
+        for (int i = 0; i < length; i++) {
+            charStack.push(s[i]);
+        }
+    
+        for (int i = 0; i < length; i++) {
+            if (s[i] != charStack.pop()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    int main_program1() {
+        string input;
+        cout << "--- Palindrome Checker using Stack ---" << endl;
+        cout << "Enter a string: ";
+        getline(cin, input);
+    
+        if (isPalindrome(input)) {
+            cout << "\"" << input << "\" is a palindrome." << endl;
+        } else {
+            cout << "\"" << input << "\" is not a palindrome." << endl;
+        }
+        return 0;
+    }
+    
+    // -----------------------------------------------------------------
+    
+    class CircularQueue {
+    private:
+        int queue[MAX];
+        int front, rear;
+        int maxSize;
+    
+    public:
+        CircularQueue() {
+            front = -1;
+            rear = -1;
+            maxSize = MAX;
+        }
+    
+        bool isFull() {
+            return ((rear + 1) % maxSize == front);
+        }
+    
+        bool isEmpty() {
+            return (front == -1);
+        }
+    
+        void insert(int token) {
+            if (isFull()) {
+                cout << "Queue Overflow! Cannot issue more tokens.\n";
+                return;
+            }
+            if (isEmpty()) {
+                front = 0;
+            }
+            rear = (rear + 1) % maxSize;
+            queue[rear] = token;
+            cout << "Token number " << token << " issued to the customer.\n";
+        }
+    
+        void remove() {
+            if (isEmpty()) {
+                cout << "Queue Underflow! No customers to serve.\n";
+                return;
+            }
+            
+            int token = queue[front];
+            cout << "Serving customer with token number: " << token << "\n";
+    
+            if (front == rear) {
+                front = -1;
+                rear = -1;
+            } else {
+                front = (front + 1) % maxSize;
+            }
+        }
+    
+        void display() {
+            if (isEmpty()) {
+                cout << "Queue is empty.\n";
+                return;
+            }
+    
+            cout << "Tokens in the queue: ";
+            int i = front;
+            while (true) {
+                cout << queue[i] << " ";
+                if (i == rear) break;
+                i = (i + 1) % maxSize;
+            }
+            cout << endl;
+        }
+    };
+    
+    int main_program2() {
+        CircularQueue q;
+        int choice, token = 1;
+        
+        cout << "\n--- Circular Queue (No Count) Menu ---" << endl;
+    
+        do {
+            cout << "\nMenu:\n";
+            cout << "1. Issue a token\n";
+            cout << "2. Serve a customer\n";
+            cout << "3. Display token numbers\n";
+            cout << "4. Exit\n";
+            cout << "Enter your choice: ";
+            cin >> choice;
+    
+            switch (choice) {
+                case 1:
+                    q.insert(token);
+                    token++;
+                    break;
+                case 2:
+                    q.remove();
+                    break;
+                case 3:
+                    q.display();
+                    break;
+                case 4:
+                    cout << "Exiting program 2.\n";
+                    break;
+                default:
+                    cout << "Invalid choice! Please try again.\n";
+            }
+        } while (choice != 4);
+        return 0;
+    }
+    
+    // -----------------------------------------------------------------
+    
+    class DLLNode {
+    public:
+        string patientName;
+        int priority;
+        DLLNode* next;
+        DLLNode* prev;
+    
+        DLLNode(string name, int p) {
+            patientName = name;
+            priority = p;
+            next = nullptr;
+            prev = nullptr;
+        }
+    };
+    
+    class DoublyPriorityQueue {
+    private:
+        DLLNode* head;
+    
+    public:
+        DoublyPriorityQueue() {
+            head = nullptr;
+        }
+    
+        ~DoublyPriorityQueue() {
+            while (!isEmpty()) {
+                deleteHighestPriority();
+            }
+        }
+    
+        bool isEmpty() {
+            return head == nullptr;
+        }
+    
+        void insert(string name, int priority) {
+            DLLNode* newNode = new DLLNode(name, priority);
+            
+            if (isEmpty()) {
+                head = newNode;
+            } else if (priority > head->priority) {
+                newNode->next = head;
+                head->prev = newNode;
+                head = newNode;
+            } else {
+                DLLNode* temp = head;
+                while (temp->next != nullptr && temp->next->priority >= priority) {
+                    temp = temp->next;
+                }
+                
+                newNode->next = temp->next;
+                if (temp->next != nullptr) {
+                    temp->next->prev = newNode;
+                }
+                temp->next = newNode;
+                newNode->prev = temp;
+            }
+            cout << "Patient '" << name << "' added with priority " << priority << "." << endl;
+        }
+    
+        void deleteHighestPriority() {
+            if (isEmpty()) {
+                cout << "Queue Underflow! No patients to serve." << endl;
+                return;
+            }
+            
+            DLLNode* temp = head;
+            head = head->next;
+            if (head != nullptr) {
+                head->prev = nullptr;
+            }
+            
+            string priorityText;
+            if (temp->priority == 3) priorityText = "Emergency";
+            else if (temp->priority == 2) priorityText = "Appointment";
+            else priorityText = "Routine Check-up";
+    
+            cout << "Serving Patient: " << temp->patientName 
+                 << " (Priority: " << temp->priority << " - " << priorityText << ")" << endl;
+                 
+            delete temp;
+        }
+    
+        void display() {
+            if (isEmpty()) {
+                cout << "Patient queue is empty." << endl;
+                return;
+            }
+    
+            cout << "\n--- Patient Waiting List (DLL) ---" << endl;
+            DLLNode* temp = head;
+            while (temp != nullptr) {
+                string priorityText;
+                if (temp->priority == 3) priorityText = "Emergency";
+                else if (temp->priority == 2) priorityText = "Appointment";
+                else priorityText = "Routine Check-up";
+                
+                cout << "Name: " << temp->patientName 
+                     << "\t| Priority: " << temp->priority << " (" << priorityText << ")" << endl;
+                temp = temp->next;
+            }
+            cout << "----------------------------------" << endl;
+        }
+    };
+    
+    int main_program3() {
+        DoublyPriorityQueue hospitalQueue;
+        int choice, priority;
+        string name;
+    
+        cout << "\n--- Hospital Priority Queue (DLL) Menu ---" << endl;
+    
+        do {
+            cout << "\nMenu:\n";
+            cout << "1. Add Patient" << endl;
+            cout << "2. Serve Next Patient" << endl;
+            cout << "3. Display Patient List" << endl;
+            cout << "4. Exit" << endl;
+            cout << "Enter your choice: ";
+            cin >> choice;
+    
+            switch (choice) {
+                case 1:
+                    cout << "Enter patient name: ";
+                    cin.ignore();
+                    getline(cin, name);
+                    
+                    cout << "Enter priority (3=Emergency, 2=Appointment, 1=Routine): ";
+                    cin >> priority;
+                    
+                    if (priority < 1 || priority > 3) {
+                        cout << "Invalid priority! Please enter 1, 2, or 3." << endl;
+                    } else {
+                        hospitalQueue.insert(name, priority);
+                    }
+                    break;
+                case 2:
+                    hospitalQueue.deleteHighestPriority();
+                    break;
+                case 3:
+                    hospitalQueue.display();
+                    break;
+                case 4:
+                    cout << "Exiting program 3.\n";
+                    break;
+                default:
+                    cout << "Invalid choice! Please try again." << endl;
+            }
+        } while (choice != 4);
+    
+        return 0;
+    }
+    
+    
+    int main() {
+        main_program1();
+        
+        cin.ignore(); 
+    
+        main_program2();
+        
+        cin.ignore();
+        
+        main_program3();
+        
+        return 0;
+    }
