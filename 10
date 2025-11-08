@@ -1,0 +1,143 @@
+10.	Implement priority queue using singly link list for hospital scenario, 3 being emergency, 2 Appoint based visit and 1 for routine check-up.
+    
+    #include <iostream>
+    #include <string>
+    
+    using namespace std;
+    
+    class Node {
+    public:
+        string patientName;
+        int priority; 
+        Node* next;
+    
+        Node(string name, int p) {
+            patientName = name;
+            priority = p;
+            next = nullptr;
+        }
+    };
+    
+    class PriorityQueue {
+    private:
+        Node* front; 
+    
+    public:
+        PriorityQueue() {
+            front = nullptr;
+        }
+    
+        ~PriorityQueue() {
+            while (!isEmpty()) {
+                deleteHighestPriority();
+            }
+        }
+    
+        bool isEmpty() {
+            return front == nullptr;
+        }
+    
+        void insert(string name, int priority) {
+            Node* newNode = new Node(name, priority);
+            
+            if (isEmpty() || priority > front->priority) {
+                newNode->next = front;
+                front = newNode;
+            } else {
+                Node* temp = front;
+                while (temp->next != nullptr && temp->next->priority >= priority) {
+                    temp = temp->next;
+                }
+                newNode->next = temp->next;
+                temp->next = newNode;
+            }
+            cout << "Patient '" << name << "' added with priority " << priority << "." << endl;
+        }
+    
+        void deleteHighestPriority() {
+            if (isEmpty()) {
+                cout << "Queue Underflow! No patients to serve." << endl;
+                return;
+            }
+            
+            Node* temp = front;
+            front = front->next;
+            
+            string priorityText;
+            if (temp->priority == 3) priorityText = "Emergency";
+            else if (temp->priority == 2) priorityText = "Appointment";
+            else priorityText = "Routine Check-up";
+    
+            cout << "Serving Patient: " << temp->patientName 
+                 << " (Priority: " << temp->priority << " - " << priorityText << ")" << endl;
+                 
+            delete temp;
+        }
+    
+        void display() {
+            if (isEmpty()) {
+                cout << "Patient queue is empty." << endl;
+                return;
+            }
+    
+            cout << "\n--- Patient Waiting List ---" << endl;
+            Node* temp = front;
+            while (temp != nullptr) {
+                string priorityText;
+                if (temp->priority == 3) priorityText = "Emergency";
+                else if (temp->priority == 2) priorityText = "Appointment";
+                else priorityText = "Routine Check-up";
+                
+                cout << "Name: " << temp->patientName 
+                     << "\t| Priority: " << temp->priority << " (" << priorityText << ")" << endl;
+                temp = temp->next;
+            }
+            cout << "-----------------------------" << endl;
+        }
+    };
+    
+    int main() {
+        PriorityQueue hospitalQueue;
+        int choice, priority;
+        string name;
+    
+        do {
+            cout << "\n--- Hospital Priority Queue Menu ---" << endl;
+            cout << "1. Add Patient" << endl;
+            cout << "2. Serve Next Patient" << endl;
+            cout << "3. Display Patient List" << endl;
+            cout << "4. Exit" << endl;
+            cout << "Enter your choice: ";
+            cin >> choice;
+    
+            switch (choice) {
+                case 1:
+                    cout << "Enter patient name: ";
+                    cin.ignore(); 
+                    getline(cin, name);
+                    
+                    cout << "Enter priority (3=Emergency, 2=Appointment, 1=Routine): ";
+                    cin >> priority;
+                    
+                    if (priority < 1 || priority > 3) {
+                        cout << "Invalid priority! Please enter 1, 2, or 3." << endl;
+                    } else {
+                        hospitalQueue.insert(name, priority);
+                    }
+                    break;
+                case 2:
+                    hospitalQueue.deleteHighestPriority();
+                    break;
+                case 3:
+                    hospitalQueue.display();
+                    break;
+                case 4:
+                    cout << "Exiting program." << endl;
+                    break;
+                default:
+                    cout << "Invalid choice! Please try again." << endl;
+            }
+        } while (choice != 4);
+    
+        return 0;
+    }
