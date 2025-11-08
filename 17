@@ -1,0 +1,93 @@
+17.	Store a valid prefix expression in an array and convert it to infix using link-list based stack.
+    
+    #include <iostream>
+    #include <string>
+    #include <algorithm>
+    
+    using namespace std;
+    
+    class Node {
+    public:
+        string data;
+        Node* next;
+    
+        Node(string val) {
+            data = val;
+            next = nullptr;
+        }
+    };
+    
+    class Stack {
+    private:
+        Node* top;
+    
+    public:
+        Stack() {
+            top = nullptr;
+        }
+    
+        ~Stack() {
+            while (!isEmpty()) {
+                pop();
+            }
+        }
+    
+        bool isEmpty() {
+            return top == nullptr;
+        }
+    
+        void push(string data) {
+            Node* newNode = new Node(data);
+            newNode->next = top;
+            top = newNode;
+        }
+    
+        string pop() {
+            if (isEmpty()) {
+                cout << "Stack Underflow" << endl;
+                return ""; 
+            }
+            Node* temp = top;
+            string value = temp->data;
+            top = top->next;
+            delete temp;
+            return value;
+        }
+    };
+    
+    bool isOperand(char c) {
+        return isalnum(c);
+    }
+    
+    string prefixToInfix(string prefix) {
+        Stack stack;
+        int length = prefix.length();
+    
+        for (int i = length - 1; i >= 0; i--) {
+            char ch = prefix[i];
+            if (isOperand(ch)) {
+                string operand(1, ch);
+                stack.push(operand);
+            } else {
+                string op1 = stack.pop();
+                string op2 = stack.pop();
+                string result = "(" + op1 + ch + op2 + ")";
+                stack.push(result);
+            }
+        }
+        return stack.pop();
+    }
+    
+    int main() {
+        string prefixExpression;
+        
+        cout << "Enter a valid prefix expression: ";
+        cin >> prefixExpression;
+    
+        string infixExpression = prefixToInfix(prefixExpression);
+    
+        cout << "Prefix Expression: " << prefixExpression << endl;
+        cout << "Infix Expression:  " << infixExpression << endl;
+    
+        return 0;
+    }
