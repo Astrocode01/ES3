@@ -1,0 +1,62 @@
+19.	Store heights of N persons in an array and sort using quick sort algorithm. 
+    
+    #include <iostream>
+    #include <algorithm> 
+    
+    using namespace std;
+    
+    int partition(float arr[], int low, int high) {
+        float pivot = arr[high]; 
+        int i = (low - 1); 
+    
+        for (int j = low; j <= high - 1; j++) {
+            if (arr[j] <= pivot) {
+                i++; 
+                swap(arr[i], arr[j]);
+            }
+        }
+        swap(arr[i + 1], arr[high]);
+        return (i + 1);
+    }
+    
+    void quick_sort(float arr[], int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            quick_sort(arr, low, pi - 1);
+            quick_sort(arr, pi + 1, high);
+        }
+    }
+    
+    void print_array(float arr[], int size) {
+        for (int i = 0; i < size; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+    
+    int main() {
+        int n;
+    
+        cout << "Enter the number of persons (N): ";
+        cin >> n;
+    
+        float* heights = new float[n];
+    
+        cout << "Enter " << n << " heights (e.g., in cm):" << endl;
+        for (int i = 0; i < n; i++) {
+            cout << "Person " << i + 1 << ": ";
+            cin >> heights[i];
+        }
+    
+        cout << "\nOriginal list of heights:" << endl;
+        print_array(heights, n);
+    
+        quick_sort(heights, 0, n - 1);
+    
+        cout << "\nHeights sorted in ascending order:" << endl;
+        print_array(heights, n);
+    
+        delete[] heights;
+    
+        return 0;
+    }
