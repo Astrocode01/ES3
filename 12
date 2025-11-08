@@ -1,0 +1,65 @@
+12.	Sort a list of names by their reverse spelling using insertion sort. 
+
+    #include <iostream>
+    #include <string>
+    #include <algorithm> 
+    
+    using namespace std;
+    
+    string reverse_string(string s) {
+        reverse(s.begin(), s.end());
+        return s;
+    }
+    
+    void insertion_sort_by_reverse(string reversed_arr[], string original_arr[], int n) {
+        for (int i = 1; i < n; i++) {
+            string rev_key = reversed_arr[i];
+            string orig_key = original_arr[i];
+            int j = i - 1;
+    
+            while (j >= 0 && reversed_arr[j] > rev_key) {
+                reversed_arr[j + 1] = reversed_arr[j];
+                original_arr[j + 1] = original_arr[j];
+                j = j - 1;
+            }
+            reversed_arr[j + 1] = rev_key;
+            original_arr[j + 1] = orig_key;
+        }
+    }
+    
+    void print_array(string arr[], int size) {
+        for (int i = 0; i < size; i++) {
+            cout << arr[i] << endl;
+        }
+    }
+    
+    int main() {
+        int n;
+    
+        cout << "Enter the number of names: ";
+        cin >> n;
+        cin.ignore(); 
+    
+        string* names = new string[n];
+        string* reversed_names = new string[n];
+    
+        cout << "Enter " << n << " names:" << endl;
+        for (int i = 0; i < n; i++) {
+            cout << "Name " << i + 1 << ": ";
+            getline(cin, names[i]);
+            reversed_names[i] = reverse_string(names[i]);
+        }
+    
+        cout << "\nOriginal list of names:" << endl;
+        print_array(names, n);
+    
+        insertion_sort_by_reverse(reversed_names, names, n);
+    
+        cout << "\nSorted list (by reverse spelling):" << endl;
+        print_array(names, n);
+    
+        delete[] names;
+        delete[] reversed_names;
+    
+        return 0;
+    }
