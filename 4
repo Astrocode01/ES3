@@ -1,0 +1,56 @@
+4.	Write a program to arrange the names of cities in alphabetical order using selection sort.
+
+    #include <iostream>
+    #include <string>
+    #include <algorithm> // For swap
+    
+    using namespace std;
+    
+    void selection_sort(string arr[], int n) {
+        int min_idx;
+        for (int i = 0; i < n - 1; i++) {
+            min_idx = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[min_idx]) {
+                    min_idx = j;
+                }
+            }
+            if (min_idx != i) {
+                swap(arr[i], arr[min_idx]);
+            }
+        }
+    }
+    
+    void print_array(string arr[], int size) {
+        for (int i = 0; i < size; i++) {
+            cout << arr[i] << endl;
+        }
+    }
+    
+    int main() {
+        int n;
+    
+        cout << "Enter the number of cities: ";
+        cin >> n;
+        cin.ignore(); 
+    
+        string* cities = new string[n];
+    
+        cout << "Enter the names of " << n << " cities:" << endl;
+        for (int i = 0; i < n; i++) {
+            cout << "City " << i + 1 << ": ";
+            getline(cin, cities[i]);
+        }
+    
+        cout << "\nOriginal list of cities:" << endl;
+        print_array(cities, n);
+    
+        selection_sort(cities, n);
+    
+        cout << "\nCities in alphabetical order:" << endl;
+        print_array(cities, n);
+    
+        delete[] cities;
+    
+        return 0;
+    }
