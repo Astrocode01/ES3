@@ -1,0 +1,108 @@
+15.	Write a program to convert a decimal number to an  8-bit binary number and create a circular linked list to store  this 8-bit binary number. 
+    
+    #include <iostream>
+    #include <vector>
+    #include <algorithm>
+    
+    using namespace std;
+    
+    class Node {
+    public:
+        int data;
+        Node* next;
+    
+        Node(int bit) {
+            data = bit;
+            next = nullptr;
+        }
+    };
+    
+    class CircularLinkedList {
+    private:
+        Node* head;
+        Node* tail;
+    
+    public:
+        CircularLinkedList() {
+            head = nullptr;
+            tail = nullptr;
+        }
+    
+        ~CircularLinkedList() {
+            if (head == nullptr) {
+                return;
+            }
+            Node* current = head;
+            Node* nextNode = nullptr;
+            do {
+                nextNode = current->next;
+                delete current;
+                current = nextNode;
+            } while (current != head);
+            
+            head = nullptr;
+            tail = nullptr;
+        }
+    
+        void insert(int bit) {
+            Node* newNode = new Node(bit);
+            if (head == nullptr) {
+                head = newNode;
+                tail = newNode;
+                tail->next = head;
+            } else {
+                tail->next = newNode;
+                tail = newNode;
+                tail->next = head;
+            }
+        }
+    
+        void display() {
+            if (head == nullptr) {
+                cout << "List is empty." << endl;
+                return;
+            }
+            Node* temp = head;
+            do {
+                cout << temp->data;
+                temp = temp->next;
+            } while (temp != head);
+            cout << endl;
+        }
+    };
+    
+    vector<int> decimalTo8BitBinary(int n) {
+        vector<int> binaryBits(8, 0); 
+        
+        int i = 7;
+        while (n > 0 && i >= 0) {
+            binaryBits[i] = n % 2;
+            n = n / 2;
+            i--;
+        }
+        return binaryBits;
+    }
+    
+    int main() {
+        int decimalNum;
+        cout << "Enter a decimal number (0-255): ";
+        cin >> decimalNum;
+    
+        if (decimalNum < 0 || decimalNum > 255) {
+            cout << "Error: Number must be between 0 and 255." << endl;
+            return 1;
+        }
+    
+        vector<int> binaryRepresentation = decimalTo8BitBinary(decimalNum);
+    
+        CircularLinkedList cll;
+        for (int bit : binaryRepresentation) {
+            cll.insert(bit);
+        }
+    
+        cout << "Decimal number: " << decimalNum << endl;
+        cout << "8-bit binary in Circular Linked List: ";
+        cll.display();
+    
+        return 0;
+    }
