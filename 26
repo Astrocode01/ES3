@@ -1,0 +1,111 @@
+26.	Write a program to store requests of applications to CPU for execution time and let the CPU pick-up the application for execution as per the order of arrival of request.
+    
+    #include <iostream>
+    #include <string>
+    
+    using namespace std;
+    
+    #define MAX 50
+    
+    class ApplicationQueue {
+    private:
+        string queue[MAX];
+        int front, rear;
+        int maxSize;
+    
+    public:
+        ApplicationQueue() {
+            front = -1;
+            rear = -1;
+            maxSize = MAX;
+        }
+    
+        bool isFull() {
+            return (rear == maxSize - 1);
+        }
+    
+        bool isEmpty() {
+            return (front == -1 || front > rear);
+        }
+    
+        void submitRequest(string appName) {
+            if (isFull()) {
+                cout << "Queue is full! Cannot accept more requests." << endl;
+                return;
+            }
+            if (front == -1) {
+                front = 0;
+            }
+            rear++;
+            queue[rear] = appName;
+            cout << "Request for application '" << appName << "' has been submitted." << endl;
+        }
+    
+        void executeNext() {
+            if (isEmpty()) {
+                cout << "No applications pending for execution." << endl;
+                return;
+            }
+            
+            string appName = queue[front];
+            front++;
+            
+            cout << "CPU is executing: " << appName << endl;
+    
+            if (front > rear) {
+                front = -1;
+                rear = -1;
+            }
+        }
+    
+        void displayQueue() {
+            if (isEmpty()) {
+                cout << "Request queue is empty." << endl;
+                return;
+            }
+    
+            cout << "\n--- Pending CPU Requests (in order) ---" << endl;
+            for (int i = front; i <= rear; i++) {
+                cout << (i - front + 1) << ". " << queue[i] << endl;
+            }
+            cout << "---------------------------------------" << endl;
+        }
+    };
+    
+    int main() {
+        ApplicationQueue cpuQueue;
+        int choice;
+        string appName;
+    
+        do {
+            cout << "\n--- CPU Request Scheduler ---" << endl;
+            cout << "1. Submit Application Request" << endl;
+            cout << "2. Execute Next Application" << endl;
+            cout << "3. Show Pending Requests" << endl;
+            cout << "4. Exit" << endl;
+            cout << "Enter your choice: ";
+            cin >> choice;
+    
+            switch (choice) {
+                case 1:
+                    cout << "Enter application name: ";
+                    cin.ignore(); 
+                    getline(cin, appName);
+                    cpuQueue.submitRequest(appName);
+                    break;
+                case 2:
+                    cpuQueue.executeNext();
+                    break;
+                case 3:
+                    cpuQueue.displayQueue();
+                    break;
+                case 4:
+                    cout << "Exiting scheduler." << endl;
+                    break;
+                default:
+                    cout << "Invalid choice! Please try again." << endl;
+            }
+        } while (choice != 4);
+    
+        return 0;
+    }
