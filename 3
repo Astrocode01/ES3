@@ -1,0 +1,51 @@
+3.	Store N integers in an array and apply insertion sort algorithm to sort it.
+
+    #include <iostream>
+    using namespace std;
+    
+    void insertion_sort(int arr[], int n) {
+        for (int i = 1; i < n; i++) {
+            int key = arr[i];
+            int j = i - 1;
+    
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
+    }
+    
+    void print_array(int arr[], int size) {
+        for (int i = 0; i < size; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+    
+    int main() {
+        int n;
+        
+        cout << "Enter the number of integers (N): ";
+        cin >> n;
+    
+        int* numbers = new int[n];
+    
+        cout << "Enter " << n << " integers:" << endl;
+        for (int i = 0; i < n; i++) {
+            cout << "Enter element " << i + 1 << ": ";
+            cin >> numbers[i];
+        }
+    
+        cout << "\nOriginal array: ";
+        print_array(numbers, n);
+    
+        insertion_sort(numbers, n);
+    
+        cout << "Sorted array: ";
+        print_array(numbers, n);
+    
+        delete[] numbers;
+    
+        return 0;
+    }
